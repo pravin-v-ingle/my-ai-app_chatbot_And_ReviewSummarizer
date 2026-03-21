@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { conversationsRepository } from '../repository/conversations.repository';
+import { conversationsRepository } from '../repositories/conversations.repository';
 import template from '../prompts/chatbot.txt';
 import fs from 'fs';
 import path from 'path';
