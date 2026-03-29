@@ -1,8 +1,13 @@
 import OpenAI from 'openai';
+import ollama from 'ollama';
+import { InferenceClient } from '@huggingface/inference';
+import systemPromt from './prompts/summarizeReviews.txt';
 
-const client = new OpenAI({
+const openAIclient = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,
 });
+
+const inferenceClient = new InferenceClient(process.env.HF_TOKEN);
 
 type GenerateTextOption = {
    model?: string;
@@ -27,7 +32,7 @@ export const llmClient = {
       maxTokens = 300,
       previousResponseId,
    }: GenerateTextOption): Promise<GenerateTextResult> {
-      const response = await client.responses.create({
+      const response = await openAIclient.responses.create({
          model,
          instructions,
          input: prompt,
@@ -39,5 +44,27 @@ export const llmClient = {
          id: response.id,
          text: response.output_text,
       };
+   },
+   async summarizeReviews(reviews: string) {
+      // const output = await inferenceClient.summarization({
+      //    model: 'facebook/bart-large-cnn',
+      //    inputs: text,
+      //    provider: 'hf-inference',
+      // });
+      // return output.summary_text;
+      const response = await ollama.chat({
+         model: 'tinyllama',
+         messages: [
+            {
+               role: 'system',
+               content: systemPromt,
+            },
+            {
+               role: 'user',
+               content: reviews,
+            },
+         ],
+      });
+      return response.message.content;
    },
 };
