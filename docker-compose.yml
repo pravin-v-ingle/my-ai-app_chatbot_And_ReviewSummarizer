@@ -1,0 +1,22 @@
+# Local MySQL for development. Credentials are throwaway defaults
+# that match packages/server/.env.example; they are not real secrets.
+services:
+   mysql:
+      image: mysql:8.4
+      container_name: my-ai-app-mysql
+      restart: unless-stopped
+      environment:
+         MYSQL_ROOT_PASSWORD: password
+         MYSQL_DATABASE: my_ai_app
+      ports:
+         - '3306:3306'
+      volumes:
+         - mysql-data:/var/lib/mysql
+      healthcheck:
+         test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-ppassword']
+         interval: 5s
+         timeout: 5s
+         retries: 10
+
+volumes:
+   mysql-data:

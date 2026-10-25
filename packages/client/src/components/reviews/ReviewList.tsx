@@ -1,4 +1,3 @@
-import axios from 'axios';
 import StarRating from './StarRating';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button } from '../ui/button';
